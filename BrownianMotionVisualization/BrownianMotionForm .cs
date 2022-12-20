@@ -131,8 +131,8 @@ namespace BrownianMotionVisualization
                             var particleElement = _particles.ElementAt(v);
 
                             // Update the particle's position by a random amount
-                            particleElement.X += Random.Next(-1, 2);
-                            particleElement.Y += Random.Next(-1, 2);
+                            particleElement.X += Random.Next(-10, 11);
+                            particleElement.Y += Random.Next(-10, 11);
 
                             // Keep the particle within the bounds of the form
                             if (particleElement.X < 0)
@@ -152,6 +152,11 @@ namespace BrownianMotionVisualization
                             {
                                 particleElement.Y = Height - _particleSize;
                             }
+
+                            particleElement.MovementStory.Add(new(particleElement.X, particleElement.Y));
+
+                            if(particleElement.MovementStory.Count > 50)
+                                particleElement.MovementStory.RemoveAt(0);
                         }
                     }));
                 }
@@ -167,25 +172,33 @@ namespace BrownianMotionVisualization
 
         protected override void OnPaint(PaintEventArgs e)
         {
+            // Set draw properties
+
             if (_enableAntiAliasing)
                 e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
 
             DoubleBuffered = _enableDoubleBuffering;
 
+            // Call base draw
+
             base.OnPaint(e);
 
-            for (int v = 0; v < _particles.Count; v++)
-            {
-                var p = _particles.ElementAt(v);
+            // Draw particles
 
+            _particles.ForEach(p =>
+            {
                 // Draw the particle at its current position
                 e.Graphics.FillEllipse(p.Brush, p.X, p.Y, p.Size, p.Size);
-            }
 
-            // Set the font and brush
-            Font font = new("Consolas", 11);
+                // Draw movement history trail
+
+                if(p.MovementStory.Count > 1) // At least 2 points.
+                    e.Graphics.DrawLines(new Pen(Color.DarkSeaGreen), p.MovementStory.ToArray());
+            });
 
             // Draw text
+
+            Font font = new("Consolas", 11);
 
             e.Graphics.DrawString($"Particle count [A/R/G]: {_particles.Count}",
                       font,
@@ -256,6 +269,11 @@ namespace BrownianMotionVisualization
                         Close();
                     break;
             }
+        }
+
+        private void BrownianMotionForm_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

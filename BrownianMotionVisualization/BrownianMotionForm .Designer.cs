@@ -37,6 +37,7 @@
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Name = "BrownianMotionForm";
             this.Text = "Form1";
+            this.Load += new System.EventHandler(this.BrownianMotionForm_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.BrownianMotionForm_KeyDown);
             this.ResumeLayout(false);
 
