@@ -16,7 +16,7 @@ namespace BrownianMotionVisualization
         // Particle settings
 
         private const int _particleSize = 7;
-        private const int _initialParticleCount = 500;
+        private const int _initialParticleCount = 100;
         private const int _timerInterval = 25; // How often particle position will be updated.
 
         private bool _drawTrails = true;
@@ -233,7 +233,7 @@ namespace BrownianMotionVisualization
 
         private void BrownianMotionForm_KeyDown(object sender, KeyEventArgs e)
         {
-            int particleModifierCount = 100;
+            int particleModifierCount = 50;
 
             switch (e.KeyCode)
             {
@@ -287,6 +287,11 @@ namespace BrownianMotionVisualization
         private void BrownianMotionForm_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void BrownianMotionForm_SizeChanged(object sender, EventArgs e)
+        {
+            RegenerateParticles();
         }
     }
 }
