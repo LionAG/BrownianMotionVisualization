@@ -264,8 +264,6 @@ namespace BrownianMotionVisualization
                         WindowState = FormWindowState.Maximized;
                     }
 
-                    RegenerateParticles(); // To fill the current entire window space.
-
                     _fullscreen = !_fullscreen;
                     break;
                 case Keys.S:
