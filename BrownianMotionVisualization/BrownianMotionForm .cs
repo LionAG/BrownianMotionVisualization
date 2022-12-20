@@ -19,6 +19,8 @@ namespace BrownianMotionVisualization
         private const int _initialParticleCount = 500;
         private const int _timerInterval = 25; // How often particle position will be updated.
 
+        private bool _drawTrails = true;
+
         // Form settings
 
         private bool _fullscreen = false;
@@ -192,18 +194,26 @@ namespace BrownianMotionVisualization
 
                 // Draw movement history trail
 
-                if(p.MovementStory.Count > 1) // At least 2 points.
-                    e.Graphics.DrawLines(new Pen(Color.DarkSeaGreen), p.MovementStory.ToArray());
+                if (_drawTrails)
+                {
+                    if (p.MovementStory.Count > 1) // At least 2 points.
+                        e.Graphics.DrawLines(new Pen(Color.DarkSeaGreen), p.MovementStory.ToArray());
+                }
             });
 
             // Draw text
 
             Font font = new("Consolas", 11);
 
-            e.Graphics.DrawString($"Particle count [A/R/G]: {_particles.Count}",
+            e.Graphics.DrawString($"Particle count  [A/R/G]: {_particles.Count}",
                       font,
                       _textBrush,
                       new PointF(this.Width - 350, this.Height - 180));
+
+            e.Graphics.DrawString($"Particle trails [T]:     {_drawTrails}",
+                                  font,
+                                  _textBrush,
+                                  new PointF(this.Width - 350, this.Height - 160));
 
             e.Graphics.DrawString($"Window size   [F]: {Width}x{Height}",
                       font,
@@ -263,6 +273,9 @@ namespace BrownianMotionVisualization
                     break;
                 case Keys.D:
                     _enableDoubleBuffering = !_enableDoubleBuffering;
+                    break;
+                case Keys.T:
+                    _drawTrails = !_drawTrails;
                     break;
                 case Keys.Escape:
                     if(MessageBox.Show("Close the app?", "Notification", MessageBoxButtons.OKCancel, MessageBoxIcon.Asterisk) == DialogResult.OK)
