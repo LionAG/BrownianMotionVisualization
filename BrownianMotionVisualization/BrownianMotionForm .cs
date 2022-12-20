@@ -17,9 +17,10 @@ namespace BrownianMotionVisualization
 
         private const int _particleSize = 7;
         private const int _initialParticleCount = 100;
-        private const int _timerInterval = 25; // How often particle position will be updated.
+        private const int _timerInterval = 1; // How often particle position will be updated.
 
         private bool _drawTrails = true;
+        private bool _limitDrawTrails = true;
 
         // Form settings
 
@@ -133,8 +134,8 @@ namespace BrownianMotionVisualization
                             var particleElement = _particles.ElementAt(v);
 
                             // Update the particle's position by a random amount
-                            particleElement.X += Random.Next(-10, 11);
-                            particleElement.Y += Random.Next(-10, 11);
+                            particleElement.X += Random.Next(-4, 5);
+                            particleElement.Y += Random.Next(-4, 5);
 
                             // Keep the particle within the bounds of the form
                             if (particleElement.X < 0)
@@ -157,7 +158,7 @@ namespace BrownianMotionVisualization
 
                             particleElement.MovementStory.Add(new(particleElement.X, particleElement.Y));
 
-                            if(particleElement.MovementStory.Count > 50)
+                            if(particleElement.MovementStory.Count > 500)
                                 particleElement.MovementStory.RemoveAt(0);
                         }
                     }));
@@ -187,6 +188,8 @@ namespace BrownianMotionVisualization
 
             // Draw particles
 
+            int drawnTrailsCount = 0;
+
             _particles.ForEach(p =>
             {
                 // Draw the particle at its current position
@@ -196,8 +199,19 @@ namespace BrownianMotionVisualization
 
                 if (_drawTrails)
                 {
-                    if (p.MovementStory.Count > 1) // At least 2 points.
-                        e.Graphics.DrawLines(new Pen(Color.DarkSeaGreen), p.MovementStory.ToArray());
+                    // At least 2 points.
+                    if (p.MovementStory.Count > 1)
+                    {
+                        if (_limitDrawTrails && drawnTrailsCount >= 5)
+                        {
+                            
+                        }
+                        else
+                        {
+                            e.Graphics.DrawLines(new Pen(Color.DarkSeaGreen), p.MovementStory.ToArray());
+                            drawnTrailsCount++;
+                        }
+                    }
                 }
             });
 
@@ -210,7 +224,7 @@ namespace BrownianMotionVisualization
                       _textBrush,
                       new PointF(this.Width - 350, this.Height - 180));
 
-            e.Graphics.DrawString($"Particle trails [T]:     {_drawTrails}",
+            e.Graphics.DrawString($"Particle trails [T/L]:   {_drawTrails}",
                                   font,
                                   _textBrush,
                                   new PointF(this.Width - 350, this.Height - 160));
@@ -274,6 +288,9 @@ namespace BrownianMotionVisualization
                     break;
                 case Keys.T:
                     _drawTrails = !_drawTrails;
+                    break;
+                case Keys.L:
+                    _limitDrawTrails = !_limitDrawTrails;
                     break;
                 case Keys.Escape:
                     if(MessageBox.Show("Close the app?", "Notification", MessageBoxButtons.OKCancel, MessageBoxIcon.Asterisk) == DialogResult.OK)
